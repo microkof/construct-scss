@@ -1,0 +1,22 @@
+{
+  "name": "construct-scss",
+  "version": "1.0.0",
+  "description": "A CSS libaray for constructing layout quickly.",
+  "main": "construct.css",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microkof/construct-scss.git"
+  },
+  "keywords": [
+    "construct"
+  ],
+  "author": "microkof (Yang Liang)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/microkof/construct-scss/issues"
+  },
+  "homepage": "https://github.com/microkof/construct-scss#readme"
+}
