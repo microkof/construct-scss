@@ -1,24 +1,17 @@
+// 如果用于 H5 则使用 0.01rem
+// 如果用于小程序 wxss 则替换成 1rpx
+// 如果用于 uni-app 则替换成 1upx
+$u: 1rpx;
+
+html {
+  font-size: calc(100vw / 7.5);
+}
+body {
+  font-size: #{32 * $u};
+}
+
 ::-webkit-scrollbar {
   display: none;
-}
-
-// 本项目全局都假定你一定使用了这条规则
-// 如果你不打算使用这条规则，那么本项目的部分跟长度有关的代码可能需要你去修改
-html {
-  font-size: calc(100vw / 3.75);
-}
-
-// 在移动端，所有文本都应当默认不可选，你可以给某些允许用户选择的文字内容单独设置为可选
-body {
-  user-select: none;
-}
-
-.select-text {
-  user-select: text;
-}
-
-.border-box {
-  box-sizing: border-box;
 }
 
 .bg-center {
@@ -26,7 +19,7 @@ body {
   background-repeat: no-repeat;
 }
 
-// 用于裁剪不规则图片，生成缩略图
+// 用于裁剪不规则图片，根据容器大小生成缩略图
 @each $val in (cover, contain) {
   .bg-#{$val} {
     background-size: #{$val};
@@ -49,28 +42,34 @@ body {
   }
 }
 
+.border-box {
+  box-sizing: border-box;
+}
+
 .border-none {
   &, &::before, &::after {
     border: none !important;
   }
 }
 
-// 10000px 其实是一个足够大的随意数，可以让正方形变为圆形，让长方形变为胶囊型
+// 圆或胶囊型
+// 10vw 其实可以是随意一个足够大的值，这样可以让正方形变为圆形，让长方形变为胶囊型
 .corner {
   &, &::before, &::after {
-    border-radius: 10000px;
+    border-radius: 10vw;
   }
 }
 
+// 不同半径的圆角
 @each $num in (2, 4, 6, 8, 10) {
   .corner-#{$num} {
     &, &::before, &::after {
-      border-radius: #{$num / 100}rem;
+      border-radius: #{$num * $u};
     }
   }
 }
 
-// 1px 发丝线简单实现
+// 1px 发丝线简单实现，支持分别设定四个边
 @each $val in (top, right, bottom, left) {
   .hairline-#{$val} {
     position: relative;
@@ -94,21 +93,22 @@ body {
 }
 
 // 红黄蓝绿等颜色不建议使用red/yellow...这种值，应从互联网上找调配好的色值
-@each $num in ('000', '333', '666', '999', 'ccc', 'fff', 'gray') {
+// 本库只提供几个最常用色值
+@each $num in ('000', '333', '666', '999', 'ccc', 'eee', 'f6f6f6', 'fff', 'gray') {
   .color-#{$num} {
     color: #{$num};
   }
 }
 
-// 用于将按钮变灰，其中 100 最后生成 1 ，表示全灰
-// 通常 33 即可
+// 用于将按钮变灰，其中 100 最后生成 1，表示全灰
+// 通常用 33 即可，也就是 0.33
 @each $num in (33, 50, 67, 100) {
   .gray-#{$num} {
     filter: #{"grayscale(#{$num / 100})"};
   }
 }
 
-@each $num in (20, 40, 60, 80, 100, 25, 50, 75) {
+@each $num in (5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100) {
   .w-#{$num} {
     width: #{$num} + '%';
   }
@@ -142,13 +142,13 @@ body {
   flex-wrap: wrap;
 }
 
-@each $num in (1, 2, 3, 4, 5, 6) {
+@each $num in (1, 2, 3, 4, 5, 6, 7, 8) {
   .flex-#{$num} {
     flex: #{$num};
   }
 }
 
-// 自身没有设 .flex-n 的元素可以设下面这个类，可防止被兄弟元素的 .flex-n 所挤压
+// 如果自身没有设 .flex-n 的元素需要防止被兄弟元素的 .flex-n 所挤压，可以设下面这个类
 .flex-shrink-0 {
   flex-shrink: 0;
 }
@@ -166,21 +166,25 @@ body {
   justify-content: center;
 }
 
+// 注意类名没有 flex，是 align-start 而不是 align-flex-start
 @each $val in (flex-start, flex-end, center, baseline) {
   .align-#{if(str-index($val, flex), str-slice($val, 6), $val)} {
     align-items: #{$val};
   }
 }
 
+// 注意类名没有 flex
 @each $val in (flex-start, flex-end, center, space-between, space-around) {
   .justify-#{if(str-index($val, flex), str-slice($val, 6), if(str-index($val, space), str-slice($val, 7), $val))} {
     justify-content: #{$val};
   }
 }
 
-@each $num in (10, 11, 12, 13, 14, 15, 16, 18, 20, 22, 24, 26) {
-  .font-#{$num} {
-    font-size: #{$num / 100}rem;
+// List 中的数字是 PC 传统意义上的 8 号字、13 号字、36 号字等等，这么做是为了便于理解
+// 但注意乘以 2 的换算，比如如果想设置为传统 36 号字，应设为 font-72
+@each $num in (8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 22, 28, 36) {
+  .font-#{$num * 2} {
+    font-size: #{$num * 2 * $u};
   }
 }
 
@@ -198,13 +202,12 @@ body {
   }
 }
 
-// CSS 分辨率为 375px 的手机上，下方的值分别相当于 5px、10px、15px、20px、25px、30px、35px、40px
 @each $num in (5, 10, 15, 20, 25, 30, 35, 40) {
   .grid-row-gap-#{$num} {
-    grid-row-gap: #{$num / 100}rem;
+    grid-row-gap: #{$num * $u};
   }
   .grid-column-gap-#{$num} {
-    grid-column-gap: #{$num / 100}rem;
+    grid-column-gap: #{$num * $u};
   }
 }
 
@@ -217,6 +220,7 @@ body {
   }
 }
 
+// 注意类名没有 space
 @each $val in (start, end, center, space-around, space-between, space-evenly) {
   .grid-justify-content-#{if(str-index($val, space), str-slice($val, 7), $val)} {
     justify-content: #{$val};
@@ -226,7 +230,7 @@ body {
   }
 }
 
-.hidden {
+.none {
   display: none;
 }
 
@@ -265,7 +269,7 @@ body {
 }
 
 // 类名范例：.margin-x-0 .margin-x-auto .margin-0 .margin-top-0 等等
-// 其中 x 表示横轴，即 left 和 right 的集合，同理 y 表示 y 轴
+// 其中 x 表示横轴，即 left 和 right 的集合，同理 y 表示 y 轴，即 top 和 bottom 的集合
 $properties: (margin, padding);
 $positions: ('', '-top', '-bottom', '-left', '-right');
 $directionMap: (x: (left, right), y: (top, bottom));
@@ -274,8 +278,8 @@ $nums: (0, 5, 10, 15, 20, 25, 30, 35, 40);
   @each $directionKey, $directionValue in $directionMap {
     @each $num in $nums {
       .#{$property}-#{$directionKey}-#{$num} {
-        #{$property}-#{nth($directionValue, 1)}: #{$num / 100}rem !important;
-        #{$property}-#{nth($directionValue, 2)}: #{$num / 100}rem !important;
+        #{$property}-#{nth($directionValue, 1)}: #{$num * $u} !important;
+        #{$property}-#{nth($directionValue, 2)}: #{$num * $u} !important;
       }
     }
     .#{$property}-#{$directionKey}-auto {
@@ -286,7 +290,7 @@ $nums: (0, 5, 10, 15, 20, 25, 30, 35, 40);
   @each $position in $positions {
     @each $num in $nums {
       .#{$property}#{$position}-#{$num} {
-        #{$property}#{$position}: #{$num / 100}rem !important;
+        #{$property}#{$position}: #{$num * $u} !important;
       }
     }
     .#{$property}#{$position}-auto {
@@ -296,10 +300,11 @@ $nums: (0, 5, 10, 15, 20, 25, 30, 35, 40);
 }
 
 // ar 为 aspect ratio（宽高比）的简写，此代码用于生成某些锁定宽高比的容器
-// 通常用于裁剪背景图片，形成缩略图
+// 通常结合 bg-cover 类，用于裁剪背景图片，形成缩略图，例如 ar-16-10 bg-cover 会将图片按照 16:10 最大裁剪并缩放到容器大小
 $ar: (
     '4-1': 25,
    '20-7': 35,
+    '5-2': 40,
     '2-1': 50,
    '16-9': 56.25,
   '16-10': 62.5,
@@ -347,19 +352,34 @@ $ar: (
   bottom: 0;
 }
 
+// 在移动端，所有文本都应当默认不可选，你可以给某些允许用户选择的文字内容单独设置为可选
+body {
+  user-select: none;
+}
+
+// 由于 body 元素设置了全局不可选中文本，因此当允许用户选中文本时，可以给元素加上本 class
+.select-text {
+  user-select: text;
+}
+
 .text-center {
   text-align: center;
+}
+
+.text-left {
+  text-align: left;
 }
 
 .text-right {
   text-align: right;
 }
 
+// 除让文本禁止换行用法外，还可以阻止 .inline-block 换行，可以形成横向滚动布局
 .text-nowrap {
   white-space: nowrap;
 }
 
-// 单行文本两端对齐，使用场合一般是让表单左侧的表单名称文字两端对齐
+// 单行文本两端对齐，一般用于让表单左侧的表单名称文字两端对齐
 .text-justify {
 	text-align: justify;
 	text-align-last: justify;
@@ -372,24 +392,23 @@ $ar: (
   }
 }
 
-.text-indent-2 {
+.text-indent {
   text-indent: 2em;
 }
 
+// 得到的行高值会是 1.2 、 1.4 这类值
 @each $num in (12, 14, 16, 18, 20, 22, 24) {
-  .lh-#{$num} {
+  .line-height-#{$num} {
     line-height: #{$num / 10};
   } 
 }
 
-.underline-none {
+.no-underline {
   text-decoration: none;
 }
 
 .line-through {
-  &, &::before, &::after {
-	  text-decoration: line-through;
-  }
+	text-decoration: line-through;
 }
 
 // 控制文本只显示单行
@@ -410,9 +429,8 @@ $ar: (
   }
 }
 
-// 给数字自动加人民币符号
+// 给数字自动加人民币符号，不适用于数字有删除线的情况
 .text-rmb::before {
-	content: "&#165;";
+	content: "¥ ";
 	font-size: 80%;
-	margin-right: 0.05rem;
 }
