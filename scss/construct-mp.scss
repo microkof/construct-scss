@@ -1,11 +1,12 @@
 // 如果用于 H5 则使用 0.01rem
-// 如果用于小程序 wxss 则替换成 1rpx
+// 如果用于小程序 WXSS 则替换成 1rpx
 // 如果用于 uni-app 则替换成 1upx
 $u: 1rpx;
 
 html {
   font-size: calc(100vw / 7.5);
 }
+
 body {
   font-size: #{32 * $u};
 }
@@ -100,7 +101,7 @@ body {
   }
 }
 
-// 用于将按钮变灰，其中 100 最后生成 1，表示全灰
+// 通常用于将按钮置灰，其中 100 最后生成 1，表示全灰
 // 通常用 33 即可，也就是 0.33
 @each $num in (33, 50, 67, 100) {
   .gray-#{$num} {
@@ -148,7 +149,7 @@ body {
   }
 }
 
-// 如果自身没有设 .flex-n 的元素需要防止被兄弟元素的 .flex-n 所挤压，可以设下面这个类
+// 如果元素自身没有设 .flex-n，同时要防止被兄弟元素的 .flex-n 所挤压，那么可以设下面这个类
 .flex-shrink-0 {
   flex-shrink: 0;
 }
@@ -161,6 +162,7 @@ body {
   flex-direction: column;
 }
 
+// 水平垂直居中
 .flex-center {
   align-items: center;
   justify-content: center;
@@ -173,7 +175,7 @@ body {
   }
 }
 
-// 注意类名没有 flex
+// 注意类名没有 flex 和 space
 @each $val in (flex-start, flex-end, center, space-between, space-around) {
   .justify-#{if(str-index($val, flex), str-slice($val, 6), if(str-index($val, space), str-slice($val, 7), $val))} {
     justify-content: #{$val};
@@ -193,15 +195,22 @@ body {
 }
 
 .grid {
-	display: grid;
+  display: grid;
 }
 
+// 排版为几列 排版为几行
 @each $num in (2, 3, 4, 5, 6, 7, 8) {
-  .grid-col-#{$num} {
+  .grid-columns-#{$num} {
     grid-template-columns: repeat(#{$num}, 1fr);
+  }
+  .grid-rows-#{$num} {
+    grid-template-rows: repeat(#{$num}, 1fr);
   }
 }
 
+// 设网格横向间距
+// 设网格竖向间距
+// 设网格横、竖向间距
 @each $num in (5, 10, 15, 20, 25, 30, 35, 40) {
   .grid-row-gap-#{$num} {
     grid-row-gap: #{$num * $u};
@@ -209,8 +218,12 @@ body {
   .grid-column-gap-#{$num} {
     grid-column-gap: #{$num * $u};
   }
+  .grid-gap-#{$num} {
+    grid-gap: #{$num * $u};
+  }
 }
 
+// 网格项（grid items）中的内容沿水平（justify-items）、垂直（align-items）方向上的对齐方式
 @each $val in (start, end, center) {
   .grid-justify-#{$val} {
     justify-items: #{$val};
@@ -220,6 +233,8 @@ body {
   }
 }
 
+// 整个内容区域在容器内的水平对齐方式（左中右）（前提是整个内容区域小于容器）
+// 整个内容区域在容器内的垂直对齐方式（上中下）（前提是整个内容区域小于容器）
 // 注意类名没有 space
 @each $val in (start, end, center, space-around, space-between, space-evenly) {
   .grid-justify-content-#{if(str-index($val, space), str-slice($val, 7), $val)} {
@@ -230,6 +245,7 @@ body {
   }
 }
 
+// 由于其他框架通常使用 .show、.hide、.hidden 控制显示，所以本库避开这三个类名
 .none {
   display: none;
 }
@@ -240,6 +256,13 @@ body {
 
 .inline-block {
   display: inline-block;
+}
+
+.visible {
+  visibility: visible;
+}
+.invisible {
+  visibility: hidden;
 }
 
 .float-left {
@@ -300,7 +323,8 @@ $nums: (0, 5, 10, 15, 20, 25, 30, 35, 40);
 }
 
 // ar 为 aspect ratio（宽高比）的简写，此代码用于生成某些锁定宽高比的容器
-// 通常结合 bg-cover 类，用于裁剪背景图片，形成缩略图，例如 ar-16-10 bg-cover 会将图片按照 16:10 最大裁剪并缩放到容器大小
+// 通常结合 .bg-cover 类，用于裁剪背景图片，形成缩略图
+// 例如 .ar-16-10.bg-cover 会将图片按照 16:10 最大裁剪并缩放到容器大小
 $ar: (
     '4-1': 25,
    '20-7': 35,
@@ -353,11 +377,11 @@ $ar: (
 }
 
 // 在移动端，所有文本都应当默认不可选，你可以给某些允许用户选择的文字内容单独设置为可选
-body {
+body, page {
   user-select: none;
 }
 
-// 由于 body 元素设置了全局不可选中文本，因此当允许用户选中文本时，可以给元素加上本 class
+// 由于 body/page 元素设置了全局不可选中文本，因此当允许用户选中文本时，可以给元素加上本 class
 .select-text {
   user-select: text;
 }
@@ -381,8 +405,8 @@ body {
 
 // 单行文本两端对齐，一般用于让表单左侧的表单名称文字两端对齐
 .text-justify {
-	text-align: justify;
-	text-align-last: justify;
+  text-align: justify;
+  text-align-last: justify;
   &::after {
     display: inline-block;
     width: 100%;
@@ -408,14 +432,14 @@ body {
 }
 
 .line-through {
-	text-decoration: line-through;
+  text-decoration: line-through;
 }
 
 // 控制文本只显示单行
 .one-line {
   text-overflow: ellipsis;
-	white-space: nowrap;
-	overflow: hidden;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 // 控制文本只显示 2 行、3 行，注意 lines 是复数形式
@@ -431,6 +455,6 @@ body {
 
 // 给数字自动加人民币符号，不适用于数字有删除线的情况
 .text-rmb::before {
-	content: "¥ ";
-	font-size: 80%;
+  content: "¥ ";
+  font-size: 80%;
 }

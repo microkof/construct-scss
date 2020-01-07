@@ -4,24 +4,19 @@ A CSS libaray for constructing layout quickly.
 ## Build
 
 ```
-sass scss/construct-h5.scss:css/construct-h5.css scss/construct-uniapp.scss:css/construct-uniapp.css scss/construct-wxss.scss:css/construct.wxss -s compressed
+sass scss/construct-h5.scss:css/construct-h5.css scss/construct-mp.scss:css/construct.wcss -s compressed
 ```
 
 ## import
 
-```
-// H5 SCSS
+```js
+// H5 版 SCSS
 import 'construct-scss/scss/construct-h5.scss';
-// H5 CSS
+// H5 版 CSS
 import 'construct-scss/css/construct-h5.css';
 
-// WXSS SCSS
-import 'construct-scss/scss/construct-wxss.scss';
-// WXSS
-import 'construct-scss/css/construct.wxss';
-
-// uni-app SCSS
-import 'construct-scss/scss/construct-uniapp.scss';
-// uni-app CSS
-import 'construct-scss/css/construct-uniapp.css';
+// 小程序版 SCSS
+import 'construct-scss/scss/construct-mp.scss';
+// 小程序版 WXSS
+@import 'construct-scss/css/construct.wxss';
 ```
