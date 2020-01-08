@@ -17,6 +17,8 @@ import 'construct-scss/css/construct-h5.css';
 
 // 小程序版 SCSS
 import 'construct-scss/scss/construct-mp.scss';
-// 小程序版 WXSS
+```
+```css
+/* 小程序版 WXSS */
 @import 'construct-scss/css/construct.wxss';
 ```
