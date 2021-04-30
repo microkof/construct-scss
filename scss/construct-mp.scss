@@ -1,18 +1,34 @@
-// 如果用于 H5 则使用 0.01rem
-// 如果用于小程序 WXSS 则替换成 1rpx
-// 如果用于 uni-app 则替换成 1upx
-$u: 1rpx;
 
-html {
-  font-size: calc(100vw / 7.5);
+$env: MP;
+
+$unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
+
+@if ($env == PC) {
+  .pointer {
+    cursor: pointer;
+  }
 }
 
-body {
-  font-size: #{32 * $u};
+@if ($env == H5) {
+  html {
+    font-size: calc(100vw / 7.5);
+  }
+  body {
+    font-size: 0.32rem;
+    user-select: none;
+  }
+  .select-auto {
+    user-select: auto;
+  }
 }
 
-::-webkit-scrollbar {
-  display: none;
+@if ($env == MP) {
+  page {
+    user-select: none;
+  }
+  .select-auto {
+    user-select: auto;
+  }
 }
 
 .bg-center {
@@ -20,7 +36,6 @@ body {
   background-repeat: no-repeat;
 }
 
-// 用于裁剪不规则图片，根据容器大小生成缩略图
 @each $val in (cover, contain) {
   .bg-#{$val} {
     background-size: #{$val};
@@ -29,18 +44,33 @@ body {
   }
 }
 
-.bg-mask {
-  position: relative;
-  &::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    top: 0;
-    border-radius: inherit;
-    background-color: rgba(0,0,0,.5);
+@each $val in (cover, contain) {
+  .object-#{$val} {
+    object-fit: #{$val};
+    width: 100%;
+    height: 100%;
   }
+}
+
+@each $alpha in (1,2,3,4,5,6,7,8,9) {
+  .bg-a-#{$alpha} {
+    background-color: rgba(255,255,255, $alpha / 10);
+  }
+}
+
+@each $hex in (000, 333, 666, 808080, 999, ccc, eee, f6f6f6, fff) {
+  .bg-#{$hex} {
+    background-color: #{'#' + $hex};
+  }
+}
+
+.bg-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
 }
 
 .border-box {
@@ -53,70 +83,90 @@ body {
   }
 }
 
-// 圆或胶囊型
-// 10vw 其实可以是随意一个足够大的值，这样可以让正方形变为圆形，让长方形变为胶囊型
 .corner {
   &, &::before, &::after {
-    border-radius: 10vw;
+    border-radius: 10000px;
   }
 }
 
-// 不同半径的圆角
-@each $num in (2, 4, 6, 8, 10) {
-  .corner-#{$num} {
+@each $radius in (4, 8, 12, 16, 20, 24, 28, 32) {
+  .corner-#{$radius} {
     &, &::before, &::after {
-      border-radius: #{$num * $u};
+      border-radius: #{$radius * $unit};
+    }
+  }
+
+  @each $position in ("top-left", "top-right", "bottom-left", "bottom-right") {
+    .corner-#{$position}-#{$radius} {
+      &, &::before, &::after {
+        border-#{$position}-radius: #{$radius * $unit};
+      }
     }
   }
 }
 
-// 1px 发丝线简单实现，支持分别设定四个边
-@each $val in (top, right, bottom, left) {
-  .hairline-#{$val} {
+@each $dir in (top, right, bottom, left) {
+  .hairline-#{$dir} {
     position: relative;
     &::after {
-      border-#{$val}: 1px solid #eee;
       position: absolute;
       box-sizing: border-box;
       content: "";
       pointer-events: none;
-      top: -50%;
-      right: -50%;
-      bottom: -50%;
-      left: -50%;
-      @each $num in (2, 3) {
-        @media only screen and (-webkit-min-device-pixel-ratio: #{$num}) {
-          transform: scale(#{1 / $num});
+      background-color: #eee;
+      @if $dir != bottom {top: 0;}
+      @if $dir != top {bottom: 0;}
+      @if $dir != left {right: 0;}
+      @if $dir != right {left: 0;}
+      @if $dir == top or $dir == bottom {height: if($unit == 1rpx, 1rpx, 1px);}
+      @if $dir == left or $dir == right {width: if($unit == 1rpx, 1rpx, 1px);}
+    }
+  }
+}
+@each $ratio in (2, 3) {
+  @each $dir in (top, right, bottom, left) {
+    @media only screen and (-webkit-min-device-pixel-ratio: #{$ratio}) {
+      .hairline-#{$dir} {
+        &::after {
+          transform: if($dir == top or $dir == bottom, scaleY(#{1 / $ratio}), scaleX(#{1 / $ratio}));
         }
       }
     }
   }
 }
 
-// 红黄蓝绿等颜色不建议使用red/yellow...这种值，应从互联网上找调配好的色值
-// 本库只提供几个最常用色值
-@each $num in ('000', '333', '666', '999', 'ccc', 'eee', 'f6f6f6', 'fff', 'gray') {
-  .color-#{$num} {
-    color: #{$num};
+@each $color in ('000', '333', '666', '808080', '999', 'ccc', 'eee', 'f6f6f6', 'fff') {
+  .color-#{$color} {
+    color: #{'#' + $color};
   }
 }
 
-// 通常用于将按钮置灰，其中 100 最后生成 1，表示全灰
-// 通常用 33 即可，也就是 0.33
-@each $num in (33, 50, 67, 100) {
-  .gray-#{$num} {
-    filter: #{"grayscale(#{$num / 100})"};
+@each $gray in (33, 50, 67, 100) {
+  .gray-#{$gray} {
+    filter: #{"grayscale(#{$gray / 100})"};
   }
 }
 
-@each $num in (5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100) {
-  .w-#{$num} {
-    width: #{$num} + '%';
+@each $per in (5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100) {
+  .w-#{$per} {
+    width: #{$per + '%'};
   }
 }
 
 .max-w-100 {
   max-width: 100%;
+}
+
+.max-h-100 {
+  max-height: 100%;
+}
+
+.w-100vw {
+  width: 100vw;
+}
+
+.h-100vh {
+  height: 100vh;
 }
 
 .h-50 {
@@ -127,10 +177,6 @@ body {
   height: 100%;
 }
 
-.max-h-100 {
-  max-height: 100%;
-}
-
 .h-auto {
   height: auto;
 }
@@ -139,19 +185,14 @@ body {
   display: flex;
 }
 
-.flex-wrap {
-  flex-wrap: wrap;
+.flex-none {
+  flex: none;
 }
 
 @each $num in (1, 2, 3, 4, 5, 6, 7, 8) {
   .flex-#{$num} {
     flex: #{$num};
   }
-}
-
-// 如果元素自身没有设 .flex-n，同时要防止被兄弟元素的 .flex-n 所挤压，那么可以设下面这个类
-.flex-shrink-0 {
-  flex-shrink: 0;
 }
 
 .flex-wrap {
@@ -162,31 +203,26 @@ body {
   flex-direction: column;
 }
 
-// 水平垂直居中
 .flex-center {
   align-items: center;
   justify-content: center;
 }
 
-// 注意类名没有 flex，是 align-start 而不是 align-flex-start
-@each $val in (flex-start, flex-end, center, baseline) {
-  .align-#{if(str-index($val, flex), str-slice($val, 6), $val)} {
-    align-items: #{$val};
-  }
-}
-
-// 注意类名没有 flex 和 space
 @each $val in (flex-start, flex-end, center, space-between, space-around) {
   .justify-#{if(str-index($val, flex), str-slice($val, 6), if(str-index($val, space), str-slice($val, 7), $val))} {
     justify-content: #{$val};
   }
 }
 
-// List 中的数字是 PC 传统意义上的 8 号字、13 号字、36 号字等等，这么做是为了便于理解
-// 但注意乘以 2 的换算，比如如果想设置为传统 36 号字，应设为 font-72
-@each $num in (8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 22, 28, 36) {
-  .font-#{$num * 2} {
-    font-size: #{$num * 2 * $u};
+@each $val in (flex-start, flex-end, center, baseline) {
+  .align-#{if(str-index($val, flex), str-slice($val, 6), $val)} {
+    align-items: #{$val};
+  }
+}
+
+@each $size in (8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 24, 28, 32, 36, 40) {
+  .font-#{$size * if($unit == 1px, 1, 2)} {
+    font-size: #{$size * if($unit == 1px, 1, 2) * $unit};
   }
 }
 
@@ -198,7 +234,6 @@ body {
   display: grid;
 }
 
-// 排版为几列 排版为几行
 @each $num in (2, 3, 4, 5, 6, 7, 8) {
   .grid-columns-#{$num} {
     grid-template-columns: repeat(#{$num}, 1fr);
@@ -208,34 +243,27 @@ body {
   }
 }
 
-// 设网格横向间距
-// 设网格竖向间距
-// 设网格横、竖向间距
-@each $num in (5, 10, 15, 20, 25, 30, 35, 40) {
-  .grid-row-gap-#{$num} {
-    grid-row-gap: #{$num * $u};
+@each $gap in (5, 10, 15, 20, 25, 30, 35, 40, 45, 50) {
+  .grid-row-gap-#{$gap} {
+    grid-row-gap: #{$gap * $unit};
   }
-  .grid-column-gap-#{$num} {
-    grid-column-gap: #{$num * $u};
+  .grid-column-gap-#{$gap} {
+    grid-column-gap: #{$gap * $unit};
   }
-  .grid-gap-#{$num} {
-    grid-gap: #{$num * $u};
+  .grid-gap-#{$gap} {
+    grid-gap: #{$gap * $unit};
   }
 }
 
-// 网格项（grid items）中的内容沿水平（justify-items）、垂直（align-items）方向上的对齐方式
-@each $val in (start, end, center) {
-  .grid-justify-#{$val} {
-    justify-items: #{$val};
+@each $align in (start, end, center) {
+  .grid-justify-#{$align} {
+    justify-items: #{$align};
   }
-  .grid-align-#{$val} {
-    align-items: #{$val};
+  .grid-align-#{$align} {
+    align-items: #{$align};
   }
 }
 
-// 整个内容区域在容器内的水平对齐方式（左中右）（前提是整个内容区域小于容器）
-// 整个内容区域在容器内的垂直对齐方式（上中下）（前提是整个内容区域小于容器）
-// 注意类名没有 space
 @each $val in (start, end, center, space-around, space-between, space-evenly) {
   .grid-justify-content-#{if(str-index($val, space), str-slice($val, 7), $val)} {
     justify-content: #{$val};
@@ -245,32 +273,24 @@ body {
   }
 }
 
-// 由于其他框架通常使用 .show、.hide、.hidden 控制显示，所以本库避开这三个类名
-.none {
-  display: none;
-}
-
-.block {
-  display: block;
-}
-
-.inline-block {
-  display: inline-block;
+@each $display in (none, inline, block, inline-block) {
+  .#{$display} {
+    display: #{$display};
+  }
 }
 
 .visible {
   visibility: visible;
 }
+
 .invisible {
   visibility: hidden;
 }
 
-.float-left {
-  float: left;
-}
-
-.float-right {
-  float: right;
+@each $float in (left, right) {
+  .float-#{$float} {
+    float: #{$float};
+  }
 }
 
 .clearfix::after {
@@ -285,24 +305,27 @@ body {
   overflow: hidden;
 }
 
-// 在移动端，通常凡是可滚动的内容，都应当考虑 iOS 平滑滚动，如果你确定无需考虑，则可以不使用本类
+// 在移动端，通常凡是可滚动的内容都应使用 iOS 平滑滚动，如果你确定无需考虑 iOS 平滑滚动，则可以不使用本类
 .overflow-auto {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-// 类名范例：.margin-x-0 .margin-x-auto .margin-0 .margin-top-0 等等
-// 其中 x 表示横轴，即 left 和 right 的集合，同理 y 表示 y 轴，即 top 和 bottom 的集合
+// 当触发锚点滚动、JS 控制的滚动时，如果希望滚动是平滑的，可以给 body 或滚动容器设上这个类
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
 $properties: (margin, padding);
 $positions: ('', '-top', '-bottom', '-left', '-right');
 $directionMap: (x: (left, right), y: (top, bottom));
-$nums: (0, 5, 10, 15, 20, 25, 30, 35, 40);
+$nums: (0, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100);
 @each $property in $properties {
   @each $directionKey, $directionValue in $directionMap {
     @each $num in $nums {
       .#{$property}-#{$directionKey}-#{$num} {
-        #{$property}-#{nth($directionValue, 1)}: #{$num * $u} !important;
-        #{$property}-#{nth($directionValue, 2)}: #{$num * $u} !important;
+        #{$property}-#{nth($directionValue, 1)}: #{$num * $unit} !important;
+        #{$property}-#{nth($directionValue, 2)}: #{$num * $unit} !important;
       }
     }
     .#{$property}-#{$directionKey}-auto {
@@ -313,7 +336,7 @@ $nums: (0, 5, 10, 15, 20, 25, 30, 35, 40);
   @each $position in $positions {
     @each $num in $nums {
       .#{$property}#{$position}-#{$num} {
-        #{$property}#{$position}: #{$num * $u} !important;
+        #{$property}#{$position}: #{$num * $unit} !important;
       }
     }
     .#{$property}#{$position}-auto {
@@ -322,9 +345,6 @@ $nums: (0, 5, 10, 15, 20, 25, 30, 35, 40);
   }
 }
 
-// ar 为 aspect ratio（宽高比）的简写，此代码用于生成某些锁定宽高比的容器
-// 通常结合 .bg-cover 类，用于裁剪背景图片，形成缩略图
-// 例如 .ar-16-10.bg-cover 会将图片按照 16:10 最大裁剪并缩放到容器大小
 $ar: (
     '4-1': 25,
    '20-7': 35,
@@ -335,9 +355,9 @@ $ar: (
     '4-3': 75,
     '1-1': 100,
 );
-@each $key, $val in ($ar) {
-  .ar-#{$key} {
-    padding-bottom: #{$val} + '%';
+@each $radio, $per in ($ar) {
+  .ar-#{$radio} {
+    padding-bottom: #{$per + '%'};
   }
 }
 
@@ -347,15 +367,15 @@ $ar: (
   }
 }
 
-@each $num in (0, 1, 2) {
-  .z-index-#{$num} {
-    z-index: #{$num};
+@each $index in (0, 1, 2) {
+  .z-index-#{$index} {
+    z-index: #{$index};
   }
 }
 
-@each $val in (top, right, bottom, left) {
-  .#{$val}-0 {
-    #{$val}: 0;
+@each $dir in (top, right, bottom, left) {
+  .#{$dir}-0 {
+    #{$dir}: 0;
   }
 }
 
@@ -376,34 +396,20 @@ $ar: (
   bottom: 0;
 }
 
-// 在移动端，所有文本都应当默认不可选，你可以给某些允许用户选择的文字内容单独设置为可选
-body, page {
-  user-select: none;
+@each $align in (center, left, right) {
+  .text-#{$align} {
+    text-align: #{$align};
+  }
 }
 
-// 由于 body/page 元素设置了全局不可选中文本，因此当允许用户选中文本时，可以给元素加上本 class
-.select-text {
-  user-select: text;
+.vam {
+  vertical-align: middle;
 }
 
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-}
-
-// 除让文本禁止换行用法外，还可以阻止 .inline-block 换行，可以形成横向滚动布局
 .text-nowrap {
   white-space: nowrap;
 }
 
-// 单行文本两端对齐，一般用于让表单左侧的表单名称文字两端对齐
 .text-justify {
   text-align: justify;
   text-align-last: justify;
@@ -420,29 +426,30 @@ body, page {
   text-indent: 2em;
 }
 
-// 得到的行高值会是 1.2 、 1.4 这类值
-@each $num in (12, 14, 16, 18, 20, 22, 24) {
-  .line-height-#{$num} {
-    line-height: #{$num / 10};
+@each $multiple in (14, 16, 18, 20, 22, 24, 26, 28) {
+  .line-height-#{$multiple} {
+    line-height: #{$multiple / 10};
   } 
+}
+
+.underline {
+  text-decoration: underline;
 }
 
 .no-underline {
   text-decoration: none;
 }
 
-.line-through {
+.del {
   text-decoration: line-through;
 }
 
-// 控制文本只显示单行
 .one-line {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
-// 控制文本只显示 2 行、3 行，注意 lines 是复数形式
 @each $key, $val in (two: 2, three: 3) {
   .#{$key}-lines {
     display: -webkit-box;
@@ -453,7 +460,6 @@ body, page {
   }
 }
 
-// 给数字自动加人民币符号，不适用于数字有删除线的情况
 .text-rmb::before {
   content: "¥ ";
   font-size: 80%;

@@ -1,5 +1,5 @@
 
-$env: H5;
+$env: PC;
 
 $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
 
