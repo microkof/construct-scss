@@ -12,6 +12,10 @@ body {
   user-select: auto;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 .bg-center {
   background-position: center;
   background-repeat: no-repeat;
@@ -77,8 +81,8 @@ body {
   background-color: rgba(255, 255, 255, 0.9);
 }
 
-.bg-0 {
-  background-color: #0;
+.bg-000 {
+  background-color: #000;
 }
 
 .bg-333 {
@@ -1967,6 +1971,10 @@ body {
 
 .text-nowrap {
   white-space: nowrap;
+}
+
+.text-wrap {
+  white-space: normal;
 }
 
 .text-justify {

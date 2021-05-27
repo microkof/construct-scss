@@ -1,6 +1,8 @@
 
 $env: MP;
 
+@use "sass:math";
+
 $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
 
 @if ($env == PC) {
@@ -19,6 +21,9 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   }
   .select-auto {
     user-select: auto;
+  }
+  ::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -54,11 +59,11 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
 
 @each $alpha in (1,2,3,4,5,6,7,8,9) {
   .bg-a-#{$alpha} {
-    background-color: rgba(255,255,255, $alpha / 10);
+    background-color: rgba(255,255,255, math.div($alpha, 10));
   }
 }
 
-@each $hex in (000, 333, 666, 808080, 999, ccc, eee, f6f6f6, fff) {
+@each $hex in ("000", "333", "666", "808080", "999", ccc, eee, f6f6f6, fff) {
   .bg-#{$hex} {
     background-color: #{'#' + $hex};
   }
@@ -128,7 +133,7 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
     @media only screen and (-webkit-min-device-pixel-ratio: #{$ratio}) {
       .hairline-#{$dir} {
         &::after {
-          transform: if($dir == top or $dir == bottom, scaleY(#{1 / $ratio}), scaleX(#{1 / $ratio}));
+          transform: if($dir == top or $dir == bottom, scaleY(#{math.div(1, $ratio)}), scaleX(#{math.div(1, $ratio)}));
         }
       }
     }
@@ -143,7 +148,7 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
 
 @each $gray in (33, 50, 67, 100) {
   .gray-#{$gray} {
-    filter: #{"grayscale(#{$gray / 100})"};
+    filter: #{"grayscale(#{math.div($gray, 100)})"};
   }
 }
 
@@ -410,6 +415,10 @@ $ar: (
   white-space: nowrap;
 }
 
+.text-wrap {
+  white-space: normal;
+}
+
 .text-justify {
   text-align: justify;
   text-align-last: justify;
@@ -428,7 +437,7 @@ $ar: (
 
 @each $multiple in (14, 16, 18, 20, 22, 24, 26, 28) {
   .line-height-#{$multiple} {
-    line-height: #{$multiple / 10};
+    line-height: #{math.div($multiple, 10)};
   } 
 }
 
