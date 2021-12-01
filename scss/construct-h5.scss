@@ -1,9 +1,17 @@
 
 $env: H5;
 
-@use "sass:math";
 
-$unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
+@use 'sass:math';
+
+$unit: map-get(
+  (
+    PC: 1px,
+    H5: 0.01rem,
+    MP: 1rpx,
+  ),
+  $env
+);
 
 @if ($env == PC) {
   .pointer {
@@ -36,10 +44,12 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   }
 }
 
+
 .bg-center {
   background-position: center;
   background-repeat: no-repeat;
 }
+
 
 @each $val in (cover, contain) {
   .bg-#{$val} {
@@ -49,6 +59,7 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   }
 }
 
+
 @each $val in (cover, contain) {
   .object-#{$val} {
     object-fit: #{$val};
@@ -57,17 +68,20 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   }
 }
 
-@each $alpha in (1,2,3,4,5,6,7,8,9) {
-  .bg-a-#{$alpha} {
-    background-color: rgba(255,255,255, math.div($alpha, 10));
-  }
-}
 
-@each $hex in ("000", "333", "666", "808080", "999", ccc, eee, f6f6f6, fff) {
+@each $hex in ('000', '333', '666', '808080', '999', ccc, eee, f6f6f6, fff) {
   .bg-#{$hex} {
     background-color: #{'#' + $hex};
   }
 }
+
+
+@each $alpha in (1, 2, 3, 4, 5, 6, 7, 8, 9) {
+  .bg-a-#{$alpha} {
+    background-color: rgba(255, 255, 255, math.div($alpha, 10));
+  }
+}
+
 
 .bg-mask {
   position: absolute;
@@ -75,40 +89,53 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
 }
+
 
 .border-box {
   box-sizing: border-box;
 }
 
+
 .border-none {
-  &, &::before, &::after {
+  &,
+  &::before,
+  &::after {
     border: none !important;
   }
 }
 
+
 .corner {
-  &, &::before, &::after {
+  &,
+  &::before,
+  &::after {
     border-radius: 10000px;
   }
 }
 
+
 @each $radius in (4, 8, 12, 16, 20, 24, 28, 32) {
   .corner-#{$radius} {
-    &, &::before, &::after {
+    &,
+    &::before,
+    &::after {
       border-radius: #{$radius * $unit};
     }
   }
 
-  @each $position in ("top-left", "top-right", "bottom-left", "bottom-right") {
+  @each $position in ('top-left', 'top-right', 'bottom-left', 'bottom-right') {
     .corner-#{$position}-#{$radius} {
-      &, &::before, &::after {
+      &,
+      &::before,
+      &::after {
         border-#{$position}-radius: #{$radius * $unit};
       }
     }
   }
 }
+
 
 @each $dir in (top, right, bottom, left) {
   .hairline-#{$dir} {
@@ -116,15 +143,27 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
     &::after {
       position: absolute;
       box-sizing: border-box;
-      content: "";
+      content: '';
       pointer-events: none;
       background-color: #eee;
-      @if $dir != bottom {top: 0;}
-      @if $dir != top {bottom: 0;}
-      @if $dir != left {right: 0;}
-      @if $dir != right {left: 0;}
-      @if $dir == top or $dir == bottom {height: if($unit == 1rpx, 1rpx, 1px);}
-      @if $dir == left or $dir == right {width: if($unit == 1rpx, 1rpx, 1px);}
+      @if $dir != bottom {
+        top: 0;
+      }
+      @if $dir != top {
+        bottom: 0;
+      }
+      @if $dir != left {
+        right: 0;
+      }
+      @if $dir != right {
+        left: 0;
+      }
+      @if $dir == top or $dir == bottom {
+        height: if($unit == 1rpx, 1rpx, 1px);
+      }
+      @if $dir == left or $dir == right {
+        width: if($unit == 1rpx, 1rpx, 1px);
+      }
     }
   }
 }
@@ -140,19 +179,22 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   }
 }
 
+
 @each $color in ('000', '333', '666', '808080', '999', 'ccc', 'eee', 'f6f6f6', 'fff') {
   .color-#{$color} {
     color: #{'#' + $color};
   }
 }
 
+
 @each $gray in (33, 50, 67, 100) {
   .gray-#{$gray} {
-    filter: #{"grayscale(#{math.div($gray, 100)})"};
+    filter: #{'grayscale(#{math.div($gray, 100)})'};
   }
 }
 
-@each $per in (5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100) {
+
+@each $per in (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100) {
   .w-#{$per} {
     width: #{$per + '%'};
   }
@@ -182,17 +224,19 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   height: 100%;
 }
 
+.w-auto {
+  width: auto;
+}
+
 .h-auto {
   height: auto;
 }
+
 
 .flex {
   display: flex;
 }
 
-.flex-none {
-  flex: none;
-}
 
 @each $num in (1, 2, 3, 4, 5, 6, 7, 8) {
   .flex-#{$num} {
@@ -200,18 +244,27 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   }
 }
 
+
+.flex-none {
+  flex: none;
+}
+
+
 .flex-wrap {
   flex-wrap: wrap;
 }
+
 
 .flex-column {
   flex-direction: column;
 }
 
+
 .flex-center {
   align-items: center;
   justify-content: center;
 }
+
 
 @each $val in (flex-start, flex-end, center, space-between, space-around) {
   .justify-#{if(str-index($val, flex), str-slice($val, 6), if(str-index($val, space), str-slice($val, 7), $val))} {
@@ -219,13 +272,15 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   }
 }
 
+
 @each $val in (flex-start, flex-end, center, baseline) {
   .align-#{if(str-index($val, flex), str-slice($val, 6), $val)} {
     align-items: #{$val};
   }
 }
 
-@each $size in (8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 24, 28, 32, 36, 40) {
+
+@each $size in (8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48) {
   .font-#{$size * if($unit == 1px, 1, 2)} {
     font-size: #{$size * if($unit == 1px, 1, 2) * $unit};
   }
@@ -235,9 +290,11 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   font-weight: bold;
 }
 
+
 .grid {
   display: grid;
 }
+
 
 @each $num in (2, 3, 4, 5, 6, 7, 8) {
   .grid-columns-#{$num} {
@@ -247,6 +304,7 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
     grid-template-rows: repeat(#{$num}, 1fr);
   }
 }
+
 
 @each $gap in (5, 10, 15, 20, 25, 30, 35, 40, 45, 50) {
   .grid-row-gap-#{$gap} {
@@ -260,6 +318,7 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   }
 }
 
+
 @each $align in (start, end, center) {
   .grid-justify-#{$align} {
     justify-items: #{$align};
@@ -269,6 +328,7 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   }
 }
 
+
 @each $val in (start, end, center, space-around, space-between, space-evenly) {
   .grid-justify-content-#{if(str-index($val, space), str-slice($val, 7), $val)} {
     justify-content: #{$val};
@@ -277,6 +337,7 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
     align-content: #{$val};
   }
 }
+
 
 @each $display in (none, inline, block, inline-block) {
   .#{$display} {
@@ -299,7 +360,7 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
 }
 
 .clearfix::after {
-  content: "";
+  content: '';
   display: block;
   height: 0;
   clear: both;
@@ -321,10 +382,20 @@ $unit: map-get((PC: 1px, H5: 0.01rem, MP: 1rpx), $env);
   scroll-behavior: smooth;
 }
 
+
 $properties: (margin, padding);
 $positions: ('', '-top', '-bottom', '-left', '-right');
-$directionMap: (x: (left, right), y: (top, bottom));
-$nums: (0, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100);
+$directionMap: (
+  x: (
+    left,
+    right,
+  ),
+  y: (
+    top,
+    bottom,
+  ),
+);
+$nums: (0, 5, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100);
 @each $property in $properties {
   @each $directionKey, $directionValue in $directionMap {
     @each $num in $nums {
@@ -350,15 +421,16 @@ $nums: (0, 10, 15, 20, 25, 30, 40, 50, 60, 70, 80, 90, 100);
   }
 }
 
+
 $ar: (
-    '4-1': 25,
-   '20-7': 35,
-    '5-2': 40,
-    '2-1': 50,
-   '16-9': 56.25,
+  '4-1': 25,
+  '20-7': 35,
+  '5-2': 40,
+  '2-1': 50,
+  '16-9': 56.25,
   '16-10': 62.5,
-    '4-3': 75,
-    '1-1': 100,
+  '4-3': 75,
+  '1-1': 100,
 );
 @each $radio, $per in ($ar) {
   .ar-#{$radio} {
@@ -366,15 +438,17 @@ $ar: (
   }
 }
 
-@each $val in (relative, absolute, fixed, sticky) {
-  .#{$val} {
-    position: #{$val};
-  }
-}
 
 @each $index in (0, 1, 2) {
   .z-index-#{$index} {
     z-index: #{$index};
+  }
+}
+
+
+@each $val in (relative, absolute, fixed, sticky) {
+  .#{$val} {
+    position: #{$val};
   }
 }
 
@@ -401,15 +475,18 @@ $ar: (
   bottom: 0;
 }
 
+
 @each $align in (center, left, right) {
   .text-#{$align} {
     text-align: #{$align};
   }
 }
 
+
 .vam {
   vertical-align: middle;
 }
+
 
 .text-nowrap {
   white-space: nowrap;
@@ -419,6 +496,7 @@ $ar: (
   white-space: normal;
 }
 
+
 .text-justify {
   text-align: justify;
   text-align-last: justify;
@@ -426,20 +504,23 @@ $ar: (
     display: inline-block;
     width: 100%;
     height: 0;
-    content: "\0020";
+    content: '\0020';
     overflow: hidden;
   }
 }
+
 
 .text-indent {
   text-indent: 2em;
 }
 
+
 @each $multiple in (14, 16, 18, 20, 22, 24, 26, 28) {
   .line-height-#{$multiple} {
     line-height: #{math.div($multiple, 10)};
-  } 
+  }
 }
+
 
 .underline {
   text-decoration: underline;
@@ -452,6 +533,7 @@ $ar: (
 .del {
   text-decoration: line-through;
 }
+
 
 .one-line {
   text-overflow: ellipsis;
@@ -469,7 +551,9 @@ $ar: (
   }
 }
 
+
 .text-rmb::before {
-  content: "¥ ";
+  content: '¥ ';
   font-size: 80%;
+  text-decoration: none;
 }

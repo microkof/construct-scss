@@ -1,17 +1,13 @@
 {
   "name": "construct-scss",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A CSS libaray for constructing layout quickly. Base on Dart Sass v1.34.0.",
-  "scripts": {
-    "build": "sass scss/construct-pc.scss:css/construct-pc.css scss/construct-h5.scss:css/construct-h5.css scss/construct-mp.scss:wxss/construct-mp.wxss -s compressed",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/microkof/construct-scss.git"
   },
   "keywords": [
-    "construct"
+    "construct scss"
   ],
   "author": "microkof (Yang Liang)",
   "license": "ISC",
